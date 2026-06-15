@@ -74,17 +74,24 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
       { charSet: "utf-8" },
       { name: "viewport", content: "width=device-width, initial-scale=1, viewport-fit=cover" },
       { title: "sync up Web Agency | South African Web Dev Agency" },
-      { name: "description", content: "sync up — High-performance web developement and Google visibility for South African businesses." },
+      {
+        name: "description",
+        content:
+          "sync up — High-performance web developement and Google visibility for South African businesses.",
+      },
       { name: "author", content: "sync up" },
       { property: "og:title", content: "sync up Web Agency" },
-      { property: "og:description", content: "Institutional-grade Web Development & Logistics Visibility." },
+      {
+        property: "og:description",
+        content: "Institutional-grade Web Development & Logistics Visibility.",
+      },
       { property: "og:image", content: "/logo.png" },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary_large_image" },
     ],
     links: [
       { rel: "icon", type: "image/png", href: "/logo.png" }, // Custom Tab Logo
-      { rel: "stylesheet", href: "/styles.css" },           // Your Industrial CSS
+      { rel: "stylesheet", href: "/styles.css" }, // Your Industrial CSS
       { rel: "stylesheet", href: appCss },
     ],
   }),
@@ -112,18 +119,11 @@ function RootComponent() {
   // Guard against missing router context during client hydration or static build.
   // The root component must be defensive: if the RouterProvider isn't mounted yet,
   // Route.useRouteContext() will throw an invariant error. Create a fallback client.
-  const [queryClient] = useState(() => {
-    try {
-      // Prefer the router-provided QueryClient when available
-      const ctx = Route.useRouteContext();
-      return ctx?.queryClient ?? new QueryClient();
-    } catch (e) {
-      // If useRouteContext throws because provider is missing, create a fresh client
-      // This is normal in static builds or during initial hydration.
-      console.debug("Router context not available, using fallback QueryClient");
-      return new QueryClient();
-    }
-  });
+  // Always create a local QueryClient fallback. Avoid calling Route.useRouteContext
+  // here to prevent invariant errors in static builds where the RouterProvider
+  // may not be mounted. Sharing the router-provided QueryClient is optional
+  // and can be added later if a safe, non-hook access path is available.
+  const [queryClient] = useState(() => new QueryClient());
 
   return (
     <QueryClientProvider client={queryClient}>
