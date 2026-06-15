@@ -10,10 +10,26 @@ if (!fs.existsSync(assetsDir)) {
 
 const files = fs.readdirSync(assetsDir);
 const cssFiles = files.filter((f) => f.endsWith('.css'));
-const jsFiles = files.filter((f) => f.endsWith('.js'));
+
+// Pick only the most recent client entry JS bundle (index-*.js) to avoid
+// including multiple historical bundles which can cause duplicate execution
+// and runtime errors in production.
+const indexFiles = files.filter((f) => /^index-.*\.js$/.test(f));
+let entryJs = [];
+if (indexFiles.length > 0) {
+  // sort by mtime descending and pick the newest
+  entryJs = indexFiles
+    .map((f) => ({ f, mtime: fs.statSync(path.join(assetsDir, f)).mtimeMs }))
+    .sort((a, b) => b.mtime - a.mtime)
+    .map((x) => x.f)
+    .slice(0, 1);
+}
+
+// Also include any additional small helper scripts that are required (optional)
+// but avoid bulk-including every .js file in the assets folder.
 
 const cssTags = cssFiles.map((f) => `  <link rel="stylesheet" href="/assets/${f}" />`).join('\n');
-const jsTags = jsFiles.map((f) => `  <script type="module" src="/assets/${f}"></script>`).join('\n');
+const jsTags = entryJs.map((f) => `  <script type="module" src="/assets/${f}"></script>`).join('\n');
 
 const html = `<!doctype html>
 <html lang="en">
