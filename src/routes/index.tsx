@@ -322,6 +322,22 @@ function Index() {
     setCookieVisible(false);
   };
 
+  // Lock scroll and focus when cookie modal is visible
+  const acceptBtnRef = React.useRef<HTMLButtonElement | null>(null);
+  React.useEffect(() => {
+    if (cookieVisible) {
+      // prevent background scroll
+      const prev = document.body.style.overflow;
+      document.body.style.overflow = "hidden";
+      // focus accept button when modal opens
+      setTimeout(() => acceptBtnRef.current?.focus(), 50);
+      return () => {
+        document.body.style.overflow = prev;
+      };
+    }
+    return undefined;
+  }, [cookieVisible]);
+
   return (
     <>
       <nav className="dotnav" aria-label="section navigation">
@@ -586,18 +602,22 @@ function Index() {
 
       <button className="whatsapp-float" type="button" onClick={() => { const text = encodeURIComponent("Hello Sync Up — I'd like to grow my business with Google visibility and a website."); window.open(`https://wa.me/27687856507?text=${text}`, "_blank"); }}>WhatsApp Us</button>
 
-      <aside className={`cookie ${cookieVisible ? "show" : ""}`} role="dialog" aria-label="cookie preferences">
-        <h4>POPIA Compliance & Session Cryptography</h4>
-        <p>Sync Up operates under mandatory functional state tracking and statistical metric logging under the South African Protection of Personal Information Act (POPIA, 2013). Essential operational data (theme configuration, authentication state, session identifiers) persists exclusively on your local device, encrypted at rest. Statistical metrics collection requires explicit authorized consent. Zero third-party data syndication. All transmission pathways employ TLS encryption protocols.</p>
-        <div className="opts">
-          <label><input type="checkbox" checked disabled /> mandatory functional state tracking</label>
-          <label><input type="checkbox" checked={analyticsEnabled} onChange={(event) => setAnalyticsEnabled(event.target.checked)} /> authorized statistical metric logging</label>
-        </div>
-        <div className="row">
-          <span className="legal">· sync up · zero external data sharing · locally persisted</span>
-          <button className="accept" type="button" onClick={acceptCookies}>authorize and initialize ▸</button>
-        </div>
-      </aside>
+      <div className={`cookie-overlay ${cookieVisible ? "show" : ""}`} aria-hidden={!cookieVisible}>
+        <aside className="cookie-modal" role="dialog" aria-modal="true" aria-label="POPIA consent dialog">
+          <div className="cookie-inner">
+            <h4>POPIA Compliance & Session Cryptography</h4>
+            <p>Sync Up operates under mandatory functional state tracking and statistical metric logging under the South African Protection of Personal Information Act (POPIA, 2013). Essential operational data (theme configuration, authentication state, session identifiers) persists exclusively on your local device, encrypted at rest. Statistical metrics collection requires explicit authorized consent. Zero third-party data syndication. All transmission pathways employ TLS encryption protocols.</p>
+            <div className="opts">
+              <label><input type="checkbox" checked disabled /> mandatory functional state tracking</label>
+              <label><input type="checkbox" checked={analyticsEnabled} onChange={(event) => setAnalyticsEnabled(event.target.checked)} /> authorized statistical metric logging</label>
+            </div>
+            <div className="row">
+              <span className="legal">· sync up · zero external data sharing · locally persisted</span>
+              <button ref={acceptBtnRef} className="accept" type="button" onClick={acceptCookies}>AUTHORIZE &amp; INITIALIZE ▸</button>
+            </div>
+          </div>
+        </aside>
+      </div>
     </>
   );
 }
