@@ -1,4 +1,5 @@
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
+import { useState } from "react";
 import {
   Outlet,
   Link,
@@ -111,7 +112,7 @@ function RootComponent() {
   // Guard against missing router context during client hydration or static build.
   // The root component must be defensive: if the RouterProvider isn't mounted yet,
   // Route.useRouteContext() will throw an invariant error. Create a fallback client.
-  const [queryClient] = React.useState(() => {
+  const [queryClient] = useState(() => {
     try {
       // Prefer the router-provided QueryClient when available
       const ctx = Route.useRouteContext();
