@@ -108,20 +108,21 @@ function RootShell({ children }: { children: React.ReactNode }) {
 }
 
 function RootComponent() {
-  // Guard against missing router context during client hydration.
-  // Some runtime environments may attempt to render this component before
-  // the `RouterProvider` is available which causes an invariant failure.
-  // Fall back to a local QueryClient to keep the app stable until the
-  // router context is available.
-  let queryClient: QueryClient;
-  try {
-    // Prefer the router-provided QueryClient when available
-    const ctx = Route.useRouteContext();
-    queryClient = ctx?.queryClient ?? new QueryClient();
-  } catch (e) {
-    // If useRouteContext throws because provider is missing, create a fresh client
-    queryClient = new QueryClient();
-  }
+  // Guard against missing router context during client hydration or static build.
+  // The root component must be defensive: if the RouterProvider isn't mounted yet,
+  // Route.useRouteContext() will throw an invariant error. Create a fallback client.
+  const [queryClient] = React.useState(() => {
+    try {
+      // Prefer the router-provided QueryClient when available
+      const ctx = Route.useRouteContext();
+      return ctx?.queryClient ?? new QueryClient();
+    } catch (e) {
+      // If useRouteContext throws because provider is missing, create a fresh client
+      // This is normal in static builds or during initial hydration.
+      console.debug("Router context not available, using fallback QueryClient");
+      return new QueryClient();
+    }
+  });
 
   return (
     <QueryClientProvider client={queryClient}>
