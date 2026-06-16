@@ -5,6 +5,7 @@ Evolve the current single-screen "control center" into a clean, mobile-first mul
 ## Architecture
 
 ### Routing (TanStack file-based routes)
+
 ```
 src/routes/
   __root.tsx              shell + StrappProvider + MobileNav + SideSheet
@@ -19,9 +20,11 @@ src/routes/
   contracts.tsx           → /contracts
   settings.tsx            → /settings
 ```
+
 Existing `/campaigns` route folded into Routes page (route = walking route, not URL route — they are conceptually similar but kept separate; the old Campaign model becomes the Route model).
 
 ### Navigation
+
 - **Bottom tab bar** (mobile-first, fixed): Dashboard · Map · Routes · Clients · Finance. Inline SVG / lucide icons, 56px tall, safe-area-inset-bottom, subtle active state (foreground icon + 2px top accent line, no glow).
 - **Top app bar**: page title left, hamburger right. Hamburger opens shadcn `Sheet` from right with: Outreach Hub, Templates, Contracts, Export Data, API Keys, Settings.
 - Desktop ≥ md: same bottom bar hidden, top bar gets inline nav links.
@@ -29,6 +32,7 @@ Existing `/campaigns` route folded into Routes page (route = walking route, not 
 ## Visual System
 
 Update `src/styles.css`:
+
 - Confirm tokens: bg `#05070B`, panel `#0E131F`, border `#1E293B`, text `#F1F5F9`, muted `#64748B`, status cold/active/deployed unchanged.
 - Add generous spacing rhythm utilities; remove the global `border-radius: 0 !important` override — keep crisp but allow 4–6px on cards/buttons for a calm modern feel (Linear/Stripe vibe, not brutalist terminal).
 - Typography: Inter 400/500/600, JetBrains Mono reserved for `.font-mono` use on money/coords/IDs only.
@@ -37,6 +41,7 @@ Update `src/styles.css`:
 ## Pages
 
 ### Dashboard (`/`)
+
 - KPI row (4 cards): Revenue this month, Active routes, Outstanding follow-ups, Active projects.
 - Today's tasks list (derived: businesses with `followUp=true` or visited >14 days ago).
 - Revenue progress bar against `revenueGoal`.
@@ -44,6 +49,7 @@ Update `src/styles.css`:
 - Quick actions: New target, Open map, Start walking mode.
 
 ### Map (`/map`)
+
 - Full-bleed Google Maps using `AIzaSyBlFLYc1snoPI7FX2Q1aJK1Kx8GwsvkxpI` (replace placeholder key, drop the "set API key" prompt).
 - Floating top: filter chips (Prospect/Active/Completed/Survey).
 - Floating bottom-right above tab bar: Walking Mode toggle + Quick Drop pin button.
@@ -51,12 +57,14 @@ Update `src/styles.css`:
 - Pin colours by status; current operator pulse dot when walking.
 
 ### Routes (`/routes`)
+
 - Re-frame `Campaign` model as `Route` (rename label only, keep `campaignId` field for back-compat).
 - Route cards: suburb, % complete (visited/total assigned), opportunity value (sum totalQuote), businesses remaining, revisit count.
 - "New Route" sheet: name, suburb, goal amount.
 - Tap card → expanded view with assigned businesses list and phase checklist (intake/outreach/deployment renamed Survey/Outreach/Deployment).
 
 ### Clients (`/clients`)
+
 - Segmented tabs: Prospects · Active · Completed.
 - Search + sort.
 - Card per business with name, area, status dot, balance due (mono).
@@ -64,6 +72,7 @@ Update `src/styles.css`:
   - Files tab: simple localStorage-backed list of filenames + notes (no real upload backend; placeholder explained in copy as "link a file reference").
 
 ### Finance (`/finance`)
+
 - Top: total revenue, outstanding balance, deposits collected, this-week revenue.
 - Revenue split: Google listings vs Websites vs WhatsApp vs SEO (computed from services).
 - Payment log: list of all `amountPaid > 0` businesses with date.
@@ -71,6 +80,7 @@ Update `src/styles.css`:
 - Invoice generator: client + selected services → printable HTML view (window.print).
 
 ### Outreach / Templates / Contracts / Settings
+
 - Outreach: existing message generator moved here.
 - Templates: editable saved message templates in localStorage.
 - Contracts: simple template-fill form generating a printable contract.
@@ -83,6 +93,7 @@ Update `src/styles.css`:
 - Hardcode the new Google Maps API key as default; remove the key-entry UI but keep override in Settings.
 
 ## Files to create
+
 - `src/components/nav/BottomTabBar.tsx`
 - `src/components/nav/TopBar.tsx`
 - `src/components/nav/SideSheet.tsx`
@@ -95,16 +106,19 @@ Update `src/styles.css`:
 - New route files listed above.
 
 ## Files to modify
+
 - `src/styles.css` — relax radius override, refine tokens.
 - `src/lib/strapp/store.tsx` — new default API key, templates, payments, exports.
 - `src/lib/strapp/types.ts` — `Template`, `PaymentLog` additions.
 - `src/routes/__root.tsx` — new shell with TopBar + Outlet + BottomTabBar + SideSheet.
 
 ## Files to remove
+
 - `src/components/strapp/ControlBar.tsx`, `UtilityDock.tsx`, `TacticalMap.tsx`, `TargetList.tsx`, `InspectionDrawer.tsx`, `CampaignCenter.tsx` (logic absorbed into new componentized pages).
 - `src/routes/campaigns.tsx` (replaced by `/routes`).
 
 ## Out of scope for this pass
+
 - Real file upload backend (Files tab is metadata only).
 - Supabase migration (kept localStorage; structure is ready for swap).
 - Real contract PDF generation (uses print-to-PDF via browser).

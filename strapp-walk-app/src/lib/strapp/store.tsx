@@ -21,15 +21,7 @@ import {
   type PaymentLog,
 } from "./types";
 
-export type { 
-  Business, 
-  BusinessCategory, 
-  Campaign, 
-  Route, 
-  RouteStatus, 
-  Template, 
-  PaymentLog 
-};
+export type { Business, BusinessCategory, Campaign, Route, RouteStatus, Template, PaymentLog };
 
 // Alias for institutional-grade compatibility
 export const useBusinessStore = useStrapp;
@@ -91,7 +83,9 @@ interface Ctx extends State {
   setFilter: (f: string) => void;
   setSearch: (s: string) => void;
   setMapsApiKey: (k: string) => void;
-  setRevenueGoal: (g: Partial<{ goal: number; googleAllocation: number; websiteAllocation: number }>) => void;
+  setRevenueGoal: (
+    g: Partial<{ goal: number; googleAllocation: number; websiteAllocation: number }>,
+  ) => void;
   setOutreachEmail: (e: string) => void;
   createBusinessAt: (
     coords: { lat: number; lng: number },
@@ -100,20 +94,24 @@ interface Ctx extends State {
   markVisited: (id: string) => void;
 
   // Routes
-  addRoute: (campaignId: string, input: {
-    name: string;
-    boundary?: string;
-    goalAmount: number;
-    rationale?: string;
-    tiers?: string[];
-    area?: string;
-    target?: number;
-    bannerLink?: string;
-    locationType?: string;
-    researchFile?: File | null;
-    startDate?: string;
-    endDate?: string;
-  }, businessIdsToAssign?: string[]) => Route;
+  addRoute: (
+    campaignId: string,
+    input: {
+      name: string;
+      boundary?: string;
+      goalAmount: number;
+      rationale?: string;
+      tiers?: string[];
+      area?: string;
+      target?: number;
+      bannerLink?: string;
+      locationType?: string;
+      researchFile?: File | null;
+      startDate?: string;
+      endDate?: string;
+    },
+    businessIdsToAssign?: string[],
+  ) => Route;
   updateRoute: (id: string, patch: Partial<Route>) => void;
   removeRoute: (id: string) => void;
   setRouteStatus: (id: string, status: RouteStatus) => void;
@@ -147,7 +145,10 @@ function load(): State {
     if (!raw) {
       for (const k of LEGACY_KEYS) {
         const v = localStorage.getItem(k);
-        if (v) { raw = v; break; }
+        if (v) {
+          raw = v;
+          break;
+        }
       }
     }
     if (!raw) return initial;
@@ -282,8 +283,7 @@ export function StrappProvider({ children }: { children: ReactNode }) {
       setFilter: (f) => setState((s) => ({ ...s, filter: f })),
       setSearch: (q) => setState((s) => ({ ...s, search: q })),
       setMapsApiKey: (k) => setState((s) => ({ ...s, mapsApiKey: (k || "").trim() })),
-      setRevenueGoal: (g) =>
-        setState((s) => ({ ...s, revenueGoal: { ...s.revenueGoal, ...g } })),
+      setRevenueGoal: (g) => setState((s) => ({ ...s, revenueGoal: { ...s.revenueGoal, ...g } })),
       setOutreachEmail: (e) => setState((s) => ({ ...s, outreachEmail: e })),
       createBusinessAt: (coords, overrides) => {
         const b = newBusiness(coords, overrides);
@@ -297,13 +297,13 @@ export function StrappProvider({ children }: { children: ReactNode }) {
       markVisited: (id) =>
         setState((s) => ({
           ...s,
-          businesses: s.businesses.map((x) =>
-            x.id === id ? { ...x, visitedAt: Date.now() } : x,
-          ),
+          businesses: s.businesses.map((x) => (x.id === id ? { ...x, visitedAt: Date.now() } : x)),
         })),
 
-      addRoute: (campaignId, input, businessIdsToAssign) => { // Updated signature
-        const r: Route = { // Changed to Route type
+      addRoute: (campaignId, input, businessIdsToAssign) => {
+        // Updated signature
+        const r: Route = {
+          // Changed to Route type
           id: "rt-" + uid(),
           campaignId: campaignId, // Assign campaignId
           name: input.name?.trim() || "Untitled Route",
@@ -321,9 +321,12 @@ export function StrappProvider({ children }: { children: ReactNode }) {
 
         // Assign businesses to the new route if provided
         if (businessIdsToAssign && businessIdsToAssign.length > 0) {
-          setState((s) => ({ // Update businesses to reference the new route's ID
+          setState((s) => ({
+            // Update businesses to reference the new route's ID
             ...s,
-            businesses: s.businesses.map((b) => (businessIdsToAssign.includes(b.id) ? { ...b, campaignId: r.id } : b)),
+            businesses: s.businesses.map((b) =>
+              businessIdsToAssign.includes(b.id) ? { ...b, campaignId: r.id } : b,
+            ),
           }));
         }
         return r;
@@ -343,7 +346,8 @@ export function StrappProvider({ children }: { children: ReactNode }) {
             return { ...s, campaigns };
           } else {
             // Add new
-            campaign = { // Create new Campaign object
+            campaign = {
+              // Create new Campaign object
               id: input.id || "rt-" + uid(),
               name: input.name?.trim() || "Untitled Route",
               rationale: input.rationale?.trim() || "",
@@ -367,7 +371,9 @@ export function StrappProvider({ children }: { children: ReactNode }) {
           routes: s.routes.filter((r) => r.campaignId !== id),
           // Businesses assigned to routes within this campaign should be unassigned
           businesses: s.businesses.map((b) => {
-            const associatedRoute = s.routes.find(r => r.id === b.campaignId && r.campaignId === id);
+            const associatedRoute = s.routes.find(
+              (r) => r.id === b.campaignId && r.campaignId === id,
+            );
             return associatedRoute ? { ...b, campaignId: null } : b;
           }),
         }));
@@ -387,8 +393,8 @@ export function StrappProvider({ children }: { children: ReactNode }) {
         setState((s) => ({
           ...s,
           routes: s.routes.filter((r) => r.id !== id), // Remove from routes array
-          businesses: s.businesses.map((b) =>
-            b.campaignId === id ? { ...b, campaignId: null } : b, // Unassign businesses from this specific route
+          businesses: s.businesses.map(
+            (b) => (b.campaignId === id ? { ...b, campaignId: null } : b), // Unassign businesses from this specific route
           ),
         })),
       setRouteStatus: (id, status) =>
@@ -433,9 +439,7 @@ export function StrappProvider({ children }: { children: ReactNode }) {
             ...s,
             payments: [p, ...s.payments],
             businesses: s.businesses.map((b) =>
-              b.id === businessId
-                ? { ...b, amountPaid: (b.amountPaid || 0) + p.amount }
-                : b,
+              b.id === businessId ? { ...b, amountPaid: (b.amountPaid || 0) + p.amount } : b,
             ),
           };
         }),

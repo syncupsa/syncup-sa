@@ -7,6 +7,7 @@
 **Score:** 8.1 / 10
 
 **Critical Justification:**
+
 - **Security:**
   - RLS enforced, but browser-exposed anon keys remain a risk for privilege escalation if policies are misconfigured.
   - No server-side secret management on static hosting; all client secrets must be public or proxied.
@@ -19,6 +20,7 @@
   - Supabase provides PITR and backups, but client-side IndexedDB is not recoverable if device is lost.
 
 **Requirements for 10/10:**
+
 - Implement CRDT/OT for conflict-free multi-device sync.
 - Proxy all writes through a hardened backend (not direct from browser).
 - Add end-to-end encryption for sensitive fields.
@@ -42,12 +44,14 @@ graph TD
 ```
 
 **Environment Variables & Config:**
+
 - `VITE_SUPABASE_URL` (public, required)
 - `VITE_SUPABASE_ANON_KEY` (public, required)
 - `VITE_SUPABASE_SERVICE_ROLE_KEY` (NEVER exposed to client)
 - `VITE_APP_ENV` ("production"/"staging")
 
 **Security Constraints:**
+
 - Only anon/public keys in client bundle.
 - All service role operations must be via Edge Function, never direct from browser.
 - RLS must default to `deny` all, then allow per-user via `auth.uid()`.
@@ -255,7 +259,7 @@ $$ language plpgsql;
 **File:** `src/lib/syncService.ts`
 
 ```ts
-import { createClient } from '@supabase/supabase-js';
+import { createClient } from "@supabase/supabase-js";
 
 const supabaseUrl = import.meta.env.VITE_SUPABASE_URL;
 const supabaseAnonKey = import.meta.env.VITE_SUPABASE_ANON_KEY;
@@ -266,10 +270,10 @@ export async function syncDraftToCloud(draft: any, type: string, token: string) 
   const timeout = setTimeout(() => controller.abort(), 8000);
   try {
     const res = await fetch(`${supabaseUrl}/functions/v1/sync-gateway`, {
-      method: 'POST',
+      method: "POST",
       headers: {
-        'Content-Type': 'application/json',
-        'Authorization': `Bearer ${token}`,
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`,
       },
       body: JSON.stringify({ type, data: draft }),
       signal: controller.signal,

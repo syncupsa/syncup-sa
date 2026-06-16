@@ -7,8 +7,8 @@ declare global {
 }
 
 export function loadGoogleMaps(apiKey: string): Promise<any> {
-  console.log('[STRAPP][loadGoogleMaps] Called with apiKey:', apiKey);
-  
+  console.log("[STRAPP][loadGoogleMaps] Called with apiKey:", apiKey);
+
   if (typeof window === "undefined" || typeof document === "undefined") {
     return Promise.resolve(null);
   }
@@ -19,9 +19,9 @@ export function loadGoogleMaps(apiKey: string): Promise<any> {
   }
 
   if (window.google?.maps) return Promise.resolve(window.google);
-  
+
   // STABILIZED SINGLETON: Never remove the script once it is in flight.
-  // If the key truly changes, the promise will still resolve or fail, 
+  // If the key truly changes, the promise will still resolve or fail,
   // but we prevent the mid-lifecycle DOM removal that causes the silent crash.
   if (window.__strappGmapsPromise && window.__strappGmapsKey === apiKey) {
     return window.__strappGmapsPromise;
@@ -46,7 +46,7 @@ export function loadGoogleMaps(apiKey: string): Promise<any> {
     s.async = true;
     s.defer = true;
     s.dataset.strappGmaps = "1";
-    
+
     s.onerror = () => {
       delete window.__strappGmapsPromise;
       reject(new Error("Failed to load Google Maps script"));
@@ -61,20 +61,28 @@ export function loadGoogleMaps(apiKey: string): Promise<any> {
 
 // Fixed Theme: Swapped pure dark definitions for a high-contrast charcoal layout schema
 export const STRAPP_MAP_STYLE: any[] = [
-  { elementType: "geometry", stylers: [{ color: "#1F2937" }] }, 
+  { elementType: "geometry", stylers: [{ color: "#1F2937" }] },
   { elementType: "labels.text.fill", stylers: [{ color: "#9CA3AF" }] },
   { elementType: "labels.text.stroke", stylers: [{ color: "#111827" }] },
   { elementType: "labels.icon", stylers: [{ visibility: "on" }] },
-  { featureType: "administrative", elementType: "geometry.stroke", stylers: [{ color: "#374151" }] },
-  { featureType: "administrative.locality", elementType: "labels.text.fill", stylers: [{ color: "#D1D5DB" }] },
+  {
+    featureType: "administrative",
+    elementType: "geometry.stroke",
+    stylers: [{ color: "#374151" }],
+  },
+  {
+    featureType: "administrative.locality",
+    elementType: "labels.text.fill",
+    stylers: [{ color: "#D1D5DB" }],
+  },
   { featureType: "poi", stylers: [{ visibility: "on" }] },
-  { featureType: "road", elementType: "geometry", stylers: [{ color: "#111827" }] }, 
+  { featureType: "road", elementType: "geometry", stylers: [{ color: "#111827" }] },
   { featureType: "road", elementType: "geometry.stroke", stylers: [{ color: "#374151" }] },
   { featureType: "road.arterial", elementType: "geometry", stylers: [{ color: "#374151" }] },
   { featureType: "road.highway", elementType: "geometry", stylers: [{ color: "#4B5563" }] },
   { featureType: "road.highway", elementType: "geometry.stroke", stylers: [{ color: "#6B7280" }] },
   { featureType: "road", elementType: "labels.text.fill", stylers: [{ color: "#9CA3AF" }] },
-  { featureType: "water", elementType: "geometry", stylers: [{ color: "#1D4ED8" }] }, // High-visibility Blue Water 
+  { featureType: "water", elementType: "geometry", stylers: [{ color: "#1D4ED8" }] }, // High-visibility Blue Water
   { featureType: "water", elementType: "labels.text.fill", stylers: [{ color: "#9CA3AF" }] },
   { featureType: "landscape", elementType: "geometry", stylers: [{ color: "#111827" }] },
 ];

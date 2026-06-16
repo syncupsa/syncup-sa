@@ -35,9 +35,22 @@ function operatorIcon(google: any) {
 }
 
 export function MapView() {
-  const { businesses, activeId, setActive, update, createBusinessAt, walkingMode, setWalking, operatorPos, mapsApiKey } = useStrapp();
-  
-  const [init, setInit] = useState<{ key: string | null; checked: boolean }>({ key: null, checked: false });
+  const {
+    businesses,
+    activeId,
+    setActive,
+    update,
+    createBusinessAt,
+    walkingMode,
+    setWalking,
+    operatorPos,
+    mapsApiKey,
+  } = useStrapp();
+
+  const [init, setInit] = useState<{ key: string | null; checked: boolean }>({
+    key: null,
+    checked: false,
+  });
 
   useEffect(() => {
     if (mapsApiKey) {
@@ -51,7 +64,7 @@ export function MapView() {
   const operatorMarkerRef = useRef<any>(null);
   const myMarkerRef = useRef<any>(null);
   const callbacksRef = useRef({ update, createBusinessAt });
-  
+
   const [myPos, setMyPos] = useState<any | null>(null);
   const [err, setErr] = useState<string | null>(null);
   const [ready, setReady] = useState(false);
@@ -60,19 +73,24 @@ export function MapView() {
   const [pendingCoords, setPendingCoords] = useState<any>(null);
   const [showClientModal, setShowClientModal] = useState(false);
 
-  useEffect(() => { callbacksRef.current = { update, createBusinessAt }; }, [update, createBusinessAt]);
+  useEffect(() => {
+    callbacksRef.current = { update, createBusinessAt };
+  }, [update, createBusinessAt]);
 
   const handleClientModalSave = (data: FormState) => {
     if (!pendingCoords) return;
-    const b = createBusinessAt({ lat: pendingCoords.lat, lng: pendingCoords.lng }, {
-      name: data.name,
-      phone: data.phone,
-      notes: data.notes,
-      status: data.status,
-      gbp_details: data.gbp_details,
-      web_dev_details: data.web_dev_details,
-      visitedAt: Date.now(),
-    });
+    const b = createBusinessAt(
+      { lat: pendingCoords.lat, lng: pendingCoords.lng },
+      {
+        name: data.name,
+        phone: data.phone,
+        notes: data.notes,
+        status: data.status,
+        gbp_details: data.gbp_details,
+        web_dev_details: data.web_dev_details,
+        visitedAt: Date.now(),
+      },
+    );
     setShowClientModal(false);
     setPendingCoords(null);
     setActive(b.id); // Open the details sheet for the new client
@@ -81,31 +99,40 @@ export function MapView() {
   useEffect(() => {
     if (!init.checked || !init.key || !mapEl.current) return;
     let cancelled = false;
-    loadGoogleMaps(init.key).then((google) => {
-      if (cancelled || !mapEl.current) return;
-      const g = (window as any).google || google;
-      const map = new g.maps.Map(mapEl.current, {
-        center: DURBAN_CENTER,
-        zoom: 18,
-        disableDefaultUI: true,
-        zoomControl: true,
-        clickableIcons: false,
-        backgroundColor: "#111827",
-        styles: STRAPP_MAP_STYLE,
-        gestureHandling: "greedy",
-      });
-      mapRef.current = map;
-      map.addListener("click", (e: any) => {
-        if (!e.latLng) return;
-        const coords = { lat: e.latLng.lat(), lng: e.latLng.lng() };
-        reverseGeocode(g, coords).then((info) => {
-          setPendingCoords({ ...coords, address: info.address || "", area: info.area || "", name: info.name || "New Business" });
-          setShowClientModal(true);
+    loadGoogleMaps(init.key)
+      .then((google) => {
+        if (cancelled || !mapEl.current) return;
+        const g = (window as any).google || google;
+        const map = new g.maps.Map(mapEl.current, {
+          center: DURBAN_CENTER,
+          zoom: 18,
+          disableDefaultUI: true,
+          zoomControl: true,
+          clickableIcons: false,
+          backgroundColor: "#111827",
+          styles: STRAPP_MAP_STYLE,
+          gestureHandling: "greedy",
         });
-      });
-      setReady(true);
-    }).catch((e) => setErr((e as Error).message));
-    return () => { cancelled = true; };
+        mapRef.current = map;
+        map.addListener("click", (e: any) => {
+          if (!e.latLng) return;
+          const coords = { lat: e.latLng.lat(), lng: e.latLng.lng() };
+          reverseGeocode(g, coords).then((info) => {
+            setPendingCoords({
+              ...coords,
+              address: info.address || "",
+              area: info.area || "",
+              name: info.name || "New Business",
+            });
+            setShowClientModal(true);
+          });
+        });
+        setReady(true);
+      })
+      .catch((e) => setErr((e as Error).message));
+    return () => {
+      cancelled = true;
+    };
   }, [init.key, init.checked]);
 
   // Real-time GPS Tracker
@@ -119,14 +146,21 @@ export function MapView() {
           const g = (window as any).google;
           myMarkerRef.current = new g.maps.Marker({
             map: mapRef.current,
-            icon: { path: g.maps.SymbolPath.CIRCLE, scale: 8, fillColor: "#3B82F6", fillOpacity: 1, strokeColor: "#FFFFFF", strokeWeight: 2 },
+            icon: {
+              path: g.maps.SymbolPath.CIRCLE,
+              scale: 8,
+              fillColor: "#3B82F6",
+              fillOpacity: 1,
+              strokeColor: "#FFFFFF",
+              strokeWeight: 2,
+            },
             zIndex: 10000,
           });
         }
         myMarkerRef.current.setPosition(newPos);
       },
       (err) => console.error("GPS Error:", err),
-      { enableHighAccuracy: true }
+      { enableHighAccuracy: true },
     );
     return () => navigator.geolocation.clearWatch(watchId);
   }, [ready]);
@@ -146,12 +180,12 @@ export function MapView() {
         setShowClientModal(true);
       },
       (e) => alert("Could not get location: " + e.message),
-      { enableHighAccuracy: true }
+      { enableHighAccuracy: true },
     );
   };
 
   // [Markers Management & UI Logic remains as per your implementation]
-  // Note: Ensure your existing markers management logic from your previous snippet 
+  // Note: Ensure your existing markers management logic from your previous snippet
   // is placed here, as it was unchanged.
 
   return (
@@ -171,14 +205,16 @@ export function MapView() {
       </div>
 
       <div className="absolute left-3 right-3 top-3 z-20 flex items-center gap-2 overflow-x-auto pb-2">
-         {/* ... Filter Chips ... */}
+        {/* ... Filter Chips ... */}
       </div>
 
       <div className="absolute right-3 bottom-20 md:bottom-6 z-20 flex flex-col items-end gap-2">
-        <FloatBtn onClick={() => setWalking(!walkingMode)} active={walkingMode}><Navigation className="h-4 w-4" /></FloatBtn>
-        
+        <FloatBtn onClick={() => setWalking(!walkingMode)} active={walkingMode}>
+          <Navigation className="h-4 w-4" />
+        </FloatBtn>
+
         {/* Swapped Map Pin icon for a descriptive button */}
-        <button 
+        <button
           onClick={quickDrop}
           className="flex h-11 px-4 items-center justify-center gap-2 rounded-full border bg-panel/95 text-foreground hover:bg-panel-elevated transition-colors shadow-lg"
         >
@@ -186,12 +222,14 @@ export function MapView() {
           <span className="text-sm font-medium">Add Current Location</span>
         </button>
 
-        <FloatBtn onClick={recenter}><Crosshair className="h-4 w-4" /></FloatBtn>
+        <FloatBtn onClick={recenter}>
+          <Crosshair className="h-4 w-4" />
+        </FloatBtn>
       </div>
 
       {activeId && (
         <BusinessSheet
-          business={businesses.find(b => b.id === activeId)!}
+          business={businesses.find((b) => b.id === activeId)!}
           open={activeId !== null} // Explicitly pass open prop
           onClose={() => setActive(null)}
         />
@@ -200,7 +238,10 @@ export function MapView() {
       <ClientModal
         open={showClientModal}
         onSave={handleClientModalSave}
-        onCancel={() => { setShowClientModal(false); setPendingCoords(null); }}
+        onCancel={() => {
+          setShowClientModal(false);
+          setPendingCoords(null);
+        }}
       />
     </div>
   );
@@ -208,7 +249,10 @@ export function MapView() {
 
 function FloatBtn({ children, onClick, active }: any) {
   return (
-    <button onClick={onClick} className={`flex h-11 w-11 items-center justify-center rounded-full border transition-colors ${active ? "bg-foreground text-background" : "bg-panel/95 text-foreground"}`}>
+    <button
+      onClick={onClick}
+      className={`flex h-11 w-11 items-center justify-center rounded-full border transition-colors ${active ? "bg-foreground text-background" : "bg-panel/95 text-foreground"}`}
+    >
       {children}
     </button>
   );

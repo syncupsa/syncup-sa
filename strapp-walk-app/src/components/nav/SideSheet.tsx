@@ -1,10 +1,5 @@
 import { Link } from "@tanstack/react-router";
-import {
-  Sheet,
-  SheetContent,
-  SheetHeader,
-  SheetTitle,
-} from "@/components/ui/sheet";
+import { Sheet, SheetContent, SheetHeader, SheetTitle } from "@/components/ui/sheet";
 import {
   Megaphone,
   FileText,
@@ -47,7 +42,10 @@ export function SideSheet({ open, onClose }: { open: boolean; onClose: () => voi
 
   return (
     <Sheet open={open} onOpenChange={(o) => !o && onClose()}>
-      <SheetContent side="right" className="w-[88%] max-w-[360px] border-l border-border bg-panel p-0">
+      <SheetContent
+        side="right"
+        className="w-[88%] max-w-[360px] border-l border-border bg-panel p-0"
+      >
         <SheetHeader className="border-b border-border px-5 py-4">
           <SheetTitle className="font-mono text-[11px] tracking-[0.3em] text-muted-foreground">
             MORE
@@ -57,7 +55,10 @@ export function SideSheet({ open, onClose }: { open: boolean; onClose: () => voi
         <div className="overflow-y-auto h-[calc(100dvh-64px)]">
           <Section title="Data">
             <button
-              onClick={() => { exportData(); onClose(); }}
+              onClick={() => {
+                exportData();
+                onClose();
+              }}
               className="flex w-full items-center gap-3 px-5 py-3 text-left hover:bg-panel-elevated transition-colors"
             >
               <Download className="h-4 w-4 text-muted-foreground" />

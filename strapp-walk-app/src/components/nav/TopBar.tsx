@@ -1,6 +1,14 @@
 import { useState } from "react";
 import { Link, useRouterState } from "@tanstack/react-router";
-import { Menu, LayoutDashboard, Map, Route as RouteIcon, Users, Wallet, Palette } from "lucide-react";
+import {
+  Menu,
+  LayoutDashboard,
+  Map,
+  Route as RouteIcon,
+  Users,
+  Wallet,
+  Palette,
+} from "lucide-react";
 import { SideSheet } from "./SideSheet";
 import { useTheme, THEMES, type ThemeName } from "@/lib/theme";
 
@@ -28,9 +36,7 @@ const desktopNav: Nav[] = [
 export function TopBar({ onLogout }: { onLogout?: () => void } = {}) {
   const [open, setOpen] = useState(false);
   const pathname = useRouterState({ select: (s) => s.location.pathname });
-  const title =
-    PAGE_TITLES[pathname] ||
-    (pathname.startsWith("/clients/") ? "Client" : "STRAPP");
+  const title = PAGE_TITLES[pathname] || (pathname.startsWith("/clients/") ? "Client" : "STRAPP");
 
   return (
     <>
@@ -38,13 +44,18 @@ export function TopBar({ onLogout }: { onLogout?: () => void } = {}) {
         <div className="flex h-14 items-center justify-between px-4">
           <div className="flex items-center gap-3">
             <Link to={"/" as any} className="flex items-center gap-2">
-                        {/* Add logout button if onLogout is provided */}
-                        {onLogout && (
-                          <button onClick={onLogout} className="ml-4 px-3 py-1 rounded bg-red-500 text-white text-xs font-semibold">
-                            Logout
-                          </button>
-                        )}
-              <span className="font-mono text-[11px] tracking-[0.3em] text-muted-foreground">STRAPP</span>
+              {/* Add logout button if onLogout is provided */}
+              {onLogout && (
+                <button
+                  onClick={onLogout}
+                  className="ml-4 px-3 py-1 rounded bg-red-500 text-white text-xs font-semibold"
+                >
+                  Logout
+                </button>
+              )}
+              <span className="font-mono text-[11px] tracking-[0.3em] text-muted-foreground">
+                STRAPP
+              </span>
               <span className="h-3 w-px bg-border" />
               <span className="font-mono text-[11px] tracking-[0.3em] text-foreground">WALK</span>
             </Link>
@@ -53,7 +64,9 @@ export function TopBar({ onLogout }: { onLogout?: () => void } = {}) {
 
           <nav className="hidden md:flex items-center gap-1">
             {desktopNav.map(({ to, label, icon: Icon, exact }) => {
-              const active = exact ? pathname === to : pathname === to || pathname.startsWith(to + "/");
+              const active = exact
+                ? pathname === to
+                : pathname === to || pathname.startsWith(to + "/");
               return (
                 <Link
                   key={to}
@@ -107,9 +120,14 @@ function ThemeQuickSwitch() {
             {THEMES.map((t) => (
               <button
                 key={t.id}
-                onClick={() => { setTheme(t.id as ThemeName); setOpen(false); }}
+                onClick={() => {
+                  setTheme(t.id as ThemeName);
+                  setOpen(false);
+                }}
                 className={`flex w-full items-center justify-between rounded px-2.5 py-1.5 text-left text-sm ${
-                  theme === t.id ? "bg-panel-elevated text-foreground" : "text-muted-foreground hover:bg-panel-elevated hover:text-foreground"
+                  theme === t.id
+                    ? "bg-panel-elevated text-foreground"
+                    : "text-muted-foreground hover:bg-panel-elevated hover:text-foreground"
                 }`}
               >
                 <span>{t.label}</span>

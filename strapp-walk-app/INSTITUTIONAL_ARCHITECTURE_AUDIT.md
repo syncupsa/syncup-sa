@@ -7,12 +7,14 @@
 ### PAGE/FLOW MAP
 
 #### 1. Login Page
+
 - **Elements:** Email, Password fields; Login CTA; Forgot Password link.
 - **Downstream State:**
   - Login CTA → Auth API call → Success: Route to Dashboard; Failure: Error state (toast/modal).
   - Validation: Email (RFC 5322), Password (min 8 chars, required).
 
 #### 2. Dashboard (Home)
+
 - **Elements:** Campaigns summary, Clients summary, Quick Actions (Add Campaign, Add Client), Navigation (Sidebar/TabBar).
 - **Downstream State:**
   - Add Campaign → Modal: Fields (Name, Area, Target, Banner URL) → Validation (all required except Banner).
@@ -20,6 +22,7 @@
   - Navigation → Route change, state persists via context/localStorage.
 
 #### 3. Campaigns Page
+
 - **Elements:** Campaign list (cards), Filter/Search, Campaign Detail Modal, Assign Client, Delete Campaign, Undo.
 - **Downstream State:**
   - Campaign Card → Open Detail Modal.
@@ -29,6 +32,7 @@
   - Undo → Pop last action, restore state.
 
 #### 4. Clients Page
+
 - **Elements:** Client list, Filter/Search, Client Detail Modal, Edit, Delete, Assign to Campaign.
 - **Downstream State:**
   - Edit → Modal: All fields editable, validation enforced.
@@ -37,6 +41,7 @@
   - Undo → Restore last deleted client.
 
 #### 5. Client Detail View
+
 - **Tabs:** Overview, Services, Website, Google Listing, Files, Notes, Payments.
 - **Google Listing Tab:**
   - Fields: Name, Category, Address, Phone, Email, Photos (upload), Opening Hours, Website, Google Verification Code.
@@ -44,6 +49,7 @@
   - Save triggers upsert, optimistic update.
 
 #### 6. Navigation
+
 - **Elements:** TopBar, BottomTabBar (mobile), SideSheet (desktop), Campaigns/Clients/Settings/Logout.
 - **Downstream State:**
   - Tab click → Route change, context persists.
@@ -55,6 +61,7 @@
 **Score:** 7.2 / 10
 
 **Justification:**
+
 - **Strengths:**
   - Modular, context-driven state management.
   - Optimistic UI for destructive/assign actions.

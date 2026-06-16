@@ -8,7 +8,12 @@ import { Search, Plus } from "lucide-react";
 
 export const Route = createFileRoute("/clients")({
   component: ClientsPage,
-  head: () => ({ meta: [{ title: "Clients · STRAPP Walk" }, { name: "description", content: "Prospect, active, and completed clients." }] }),
+  head: () => ({
+    meta: [
+      { title: "Clients · STRAPP Walk" },
+      { name: "description", content: "Prospect, active, and completed clients." },
+    ],
+  }),
 });
 
 const TABS: { value: "all" | BusinessStatus; label: string }[] = [
@@ -29,7 +34,11 @@ function ClientsPage() {
   const filtered = useMemo(() => {
     return businesses
       .filter((b) => (tab === "all" ? true : b.status === tab))
-      .filter((b) => (q ? (b.name + " " + b.area + " " + b.address).toLowerCase().includes(q.toLowerCase()) : true))
+      .filter((b) =>
+        q
+          ? (b.name + " " + b.area + " " + b.address).toLowerCase().includes(q.toLowerCase())
+          : true,
+      )
       .sort((a, b) => (b.visitedAt || b.createdAt) - (a.visitedAt || a.createdAt));
   }, [businesses, tab, q]);
 
@@ -84,7 +93,9 @@ function ClientsPage() {
               key={t.value}
               onClick={() => setTab(t.value)}
               className={`rounded px-3 py-1.5 text-xs transition-colors ${
-                tab === t.value ? "bg-panel-elevated text-foreground" : "text-muted-foreground hover:text-foreground"
+                tab === t.value
+                  ? "bg-panel-elevated text-foreground"
+                  : "text-muted-foreground hover:text-foreground"
               }`}
             >
               {t.label}
@@ -109,7 +120,9 @@ function ClientsPage() {
                     <StatusDot status={b.status} />
                     <div className="min-w-0">
                       <div className="truncate text-sm text-foreground">{b.name}</div>
-                      <div className="truncate text-xs text-muted-foreground">{b.area || b.address || "—"}</div>
+                      <div className="truncate text-xs text-muted-foreground">
+                        {b.area || b.address || "—"}
+                      </div>
                     </div>
                   </div>
                   <div className="text-right text-xs shrink-0">
@@ -127,7 +140,10 @@ function ClientsPage() {
       <ClientModal
         open={showClientModal}
         onSave={handleClientModalSave}
-        onCancel={() => { setShowClientModal(false); setPendingCoords(null); }}
+        onCancel={() => {
+          setShowClientModal(false);
+          setPendingCoords(null);
+        }}
       />
     </PageContainer>
   );

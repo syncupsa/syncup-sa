@@ -11,7 +11,16 @@ export const Route = createFileRoute("/settings")({
 });
 
 function SettingsPage() {
-  const { revenueGoal, setRevenueGoal, outreachEmail, setOutreachEmail, mapsApiKey, setMapsApiKey, importJson, resetAll } = useStrapp();
+  const {
+    revenueGoal,
+    setRevenueGoal,
+    outreachEmail,
+    setOutreachEmail,
+    mapsApiKey,
+    setMapsApiKey,
+    importJson,
+    resetAll,
+  } = useStrapp();
   const { theme, setTheme } = useTheme();
   const fileRef = useRef<HTMLInputElement>(null);
   const [status, setStatus] = useState("");
@@ -36,7 +45,9 @@ function SettingsPage() {
         </Card>
         <Card className="p-5 space-y-3 md:col-span-2">
           <h3 className="text-sm font-medium text-foreground">Theme</h3>
-          <p className="text-xs text-muted-foreground">Hot-swap the visual matrix. Persists across sessions.</p>
+          <p className="text-xs text-muted-foreground">
+            Hot-swap the visual matrix. Persists across sessions.
+          </p>
           <div className="grid gap-2 sm:grid-cols-2 lg:grid-cols-4">
             {THEMES.map((t) => {
               const active = theme === t.id;
@@ -64,36 +75,70 @@ function SettingsPage() {
         <Card className="p-5 space-y-3">
           <h3 className="text-sm font-medium text-foreground">Revenue target</h3>
           <Field label="Monthly goal (R)">
-            <input type="number" min={0} className="strapp-input" value={revenueGoal.goal} onChange={(e) => setRevenueGoal({ goal: Number(e.target.value) || 0 })} />
+            <input
+              type="number"
+              min={0}
+              className="strapp-input"
+              value={revenueGoal.goal}
+              onChange={(e) => setRevenueGoal({ goal: Number(e.target.value) || 0 })}
+            />
           </Field>
         </Card>
 
         <Card className="p-5 space-y-3">
           <h3 className="text-sm font-medium text-foreground">Operator</h3>
           <Field label="Email">
-            <input className="strapp-input" value={outreachEmail} onChange={(e) => setOutreachEmail(e.target.value)} placeholder="you@strapp.co.za" />
+            <input
+              className="strapp-input"
+              value={outreachEmail}
+              onChange={(e) => setOutreachEmail(e.target.value)}
+              placeholder="you@strapp.co.za"
+            />
           </Field>
         </Card>
 
         <Card className="p-5 space-y-3 md:col-span-2">
           <h3 className="text-sm font-medium text-foreground">Google Maps API key</h3>
-          <p className="text-xs text-muted-foreground">A working key is pre-configured. Override here if needed.</p>
-          <input className="strapp-input font-mono text-xs" value={mapsApiKey} onChange={(e) => setMapsApiKey(e.target.value)} />
+          <p className="text-xs text-muted-foreground">
+            A working key is pre-configured. Override here if needed.
+          </p>
+          <input
+            className="strapp-input font-mono text-xs"
+            value={mapsApiKey}
+            onChange={(e) => setMapsApiKey(e.target.value)}
+          />
         </Card>
 
         <Card className="p-5 space-y-3 md:col-span-2">
           <h3 className="text-sm font-medium text-foreground">Data</h3>
-          <p className="text-xs text-muted-foreground">Backup or restore all clients, routes, payments, and templates.</p>
+          <p className="text-xs text-muted-foreground">
+            Backup or restore all clients, routes, payments, and templates.
+          </p>
           <div className="flex flex-wrap gap-2">
-            <button onClick={() => fileRef.current?.click()} className="inline-flex items-center gap-2 rounded-md border border-border bg-panel px-3 py-2 text-sm text-foreground hover:bg-panel-elevated">
+            <button
+              onClick={() => fileRef.current?.click()}
+              className="inline-flex items-center gap-2 rounded-md border border-border bg-panel px-3 py-2 text-sm text-foreground hover:bg-panel-elevated"
+            >
               <Upload className="h-4 w-4" /> Import JSON
             </button>
-            <input ref={fileRef} type="file" accept="application/json" className="hidden" onChange={async (e) => {
-              const f = e.target.files?.[0]; if (!f) return;
-              const text = await f.text();
-              setStatus(importJson(text) ? "Imported." : "Invalid file.");
-            }} />
-            <button onClick={() => { if (confirm("Wipe ALL local data? This cannot be undone.")) resetAll(); }} className="inline-flex items-center gap-2 rounded-md border border-border bg-panel px-3 py-2 text-sm text-status-prospect hover:bg-panel-elevated">
+            <input
+              ref={fileRef}
+              type="file"
+              accept="application/json"
+              className="hidden"
+              onChange={async (e) => {
+                const f = e.target.files?.[0];
+                if (!f) return;
+                const text = await f.text();
+                setStatus(importJson(text) ? "Imported." : "Invalid file.");
+              }}
+            />
+            <button
+              onClick={() => {
+                if (confirm("Wipe ALL local data? This cannot be undone.")) resetAll();
+              }}
+              className="inline-flex items-center gap-2 rounded-md border border-border bg-panel px-3 py-2 text-sm text-status-prospect hover:bg-panel-elevated"
+            >
               <RotateCcw className="h-4 w-4" /> Reset everything
             </button>
           </div>
@@ -105,7 +150,14 @@ function SettingsPage() {
   );
 }
 function Field({ label, children }: { label: string; children: React.ReactNode }) {
-  return <label className="block"><div className="text-[10px] uppercase tracking-wider text-muted-foreground mb-1.5">{label}</div>{children}</label>;
+  return (
+    <label className="block">
+      <div className="text-[10px] uppercase tracking-wider text-muted-foreground mb-1.5">
+        {label}
+      </div>
+      {children}
+    </label>
+  );
 }
 
 // Move PasswordChange outside SettingsPage
@@ -133,11 +185,13 @@ function PasswordChange() {
       const res = await fetch("/api/change-password", {
         method: "POST",
         headers: { "Content-Type": "application/json", Authorization: `Bearer ${token}` },
-        body: JSON.stringify({ oldPassword: oldPass, newPassword: newPass })
+        body: JSON.stringify({ oldPassword: oldPass, newPassword: newPass }),
       });
       if (!res.ok) throw new Error("Password change failed");
       setStatus("Password changed.");
-      setOldPass(""); setNewPass(""); setConfirm("");
+      setOldPass("");
+      setNewPass("");
+      setConfirm("");
     } catch (e: any) {
       setStatus(e.message);
     } finally {
@@ -147,11 +201,38 @@ function PasswordChange() {
   return (
     <form onSubmit={handleChange} className="space-y-2">
       <div className="flex gap-2">
-        <input type="password" className="strapp-input" placeholder="Old password" value={oldPass} onChange={e => setOldPass(e.target.value)} required />
-        <input type="password" className="strapp-input" placeholder="New password" value={newPass} onChange={e => setNewPass(e.target.value)} required />
-        <input type="password" className="strapp-input" placeholder="Confirm new" value={confirm} onChange={e => setConfirm(e.target.value)} required />
+        <input
+          type="password"
+          className="strapp-input"
+          placeholder="Old password"
+          value={oldPass}
+          onChange={(e) => setOldPass(e.target.value)}
+          required
+        />
+        <input
+          type="password"
+          className="strapp-input"
+          placeholder="New password"
+          value={newPass}
+          onChange={(e) => setNewPass(e.target.value)}
+          required
+        />
+        <input
+          type="password"
+          className="strapp-input"
+          placeholder="Confirm new"
+          value={confirm}
+          onChange={(e) => setConfirm(e.target.value)}
+          required
+        />
       </div>
-      <button type="submit" className="bg-primary text-primary-foreground px-3 py-1.5 rounded text-xs font-bold" disabled={loading}>{loading ? "Saving..." : "Change password"}</button>
+      <button
+        type="submit"
+        className="bg-primary text-primary-foreground px-3 py-1.5 rounded text-xs font-bold"
+        disabled={loading}
+      >
+        {loading ? "Saving..." : "Change password"}
+      </button>
       {status && <div className="text-xs text-status-prospect mt-1">{status}</div>}
     </form>
   );

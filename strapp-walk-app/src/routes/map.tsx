@@ -6,7 +6,10 @@ export const Route = createFileRoute("/map")({
   head: () => ({
     meta: [
       { title: "Map · STRAPP Walk" },
-      { name: "description", content: "Geographic intelligence layer — pins, walking mode, target drop." },
+      {
+        name: "description",
+        content: "Geographic intelligence layer — pins, walking mode, target drop.",
+      },
     ],
   }),
 });

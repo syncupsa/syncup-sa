@@ -1,6 +1,7 @@
 This `next-app/` folder contains a Next.js 15 (App Router) reference module optimized for Edge-based international routing, Core Web Vitals, and a hyper-optimized JSON-LD unified graph.
 
 Files added:
+
 - middleware.ts — Edge middleware for hreflang and geo-routing (Cloudflare/Vercel compatible)
 - app/layout.tsx — Root layout with LCP preloads and JSON-LD injection
 - app/page.tsx — Server Component with CLS-safe hero and JSON-LD
@@ -9,6 +10,7 @@ Files added:
 - lib/jsonld.ts — Unified JSON-LD graph builder and sample graph
 
 Usage notes:
+
 - Drop this into a Next.js 15 project and install dependencies:
 
 ```bash

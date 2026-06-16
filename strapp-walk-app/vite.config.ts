@@ -21,12 +21,22 @@ function rewriteClientHtml() {
         .map((file) => `./${file.fileName}`);
 
       if (cssFiles.length > 0) {
-        const cssTags = cssFiles.map((href) => `  <link rel="stylesheet" href="${href}">`).join("\n");
-        html = html.replace(/<link\s+rel="stylesheet"[^>]*href="\.\/src\/styles\.css"[^>]*>\s*/i, `${cssTags}\n`);
+        const cssTags = cssFiles
+          .map((href) => `  <link rel="stylesheet" href="${href}">`)
+          .join("\n");
+        html = html.replace(
+          /<link\s+rel="stylesheet"[^>]*href="\.\/src\/styles\.css"[^>]*>\s*/i,
+          `${cssTags}\n`,
+        );
       }
       if (jsFiles.length > 0) {
-        const scriptTags = jsFiles.map((src) => `  <script type="module" src="${src}"></script>`).join("\n");
-        html = html.replace(/<script[^>]*src="\.\/src\/start\.ts"[^>]*><\/script>\s*/i, `${scriptTags}\n`);
+        const scriptTags = jsFiles
+          .map((src) => `  <script type="module" src="${src}"></script>`)
+          .join("\n");
+        html = html.replace(
+          /<script[^>]*src="\.\/src\/start\.ts"[^>]*><\/script>\s*/i,
+          `${scriptTags}\n`,
+        );
       }
 
       html = html.replace(/href="\/manifest\.json"/g, 'href="./manifest.json"');
@@ -36,7 +46,7 @@ function rewriteClientHtml() {
       html = html.replace(/href="\/splash-828x1792\.png"[^>]*>\s*/i, "");
 
       fs.writeFileSync(htmlPath, html, "utf8");
-    }
+    },
   };
 }
 

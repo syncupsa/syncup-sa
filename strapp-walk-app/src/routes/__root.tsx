@@ -1,4 +1,4 @@
-import * as React from 'react';
+import * as React from "react";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import {
   Outlet,
@@ -13,11 +13,11 @@ import { ThemeProvider } from "@/lib/theme";
 import { TopBar } from "@/components/nav/TopBar";
 import { BottomTabBar } from "@/components/nav/BottomTabBar";
 
-import '../styles.css';
+import "../styles.css";
 
 function DevelopmentScripts() {
   // REMOVED HYDRATION MISMATCH TRIGGER:
-  // Returning null on mount while the server rendered <Scripts/> 
+  // Returning null on mount while the server rendered <Scripts/>
   // causes a hard recovery loop in React 19.
   return <Scripts />;
 }
@@ -85,7 +85,10 @@ function ErrorComponent({ error, reset }: { error: Error; reset: () => void }) {
         <h1 className="text-lg font-medium text-foreground">Something went wrong</h1>
         <p className="mt-2 text-sm text-muted-foreground">{error.message}</p>
         <button
-          onClick={() => { router.invalidate(); reset(); }}
+          onClick={() => {
+            router.invalidate();
+            reset();
+          }}
           className="mt-6 rounded-md bg-foreground px-4 py-2 text-sm font-medium text-background"
         >
           Try again
@@ -102,7 +105,10 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
       { name: "viewport", content: "width=device-width, initial-scale=1, viewport-fit=cover" },
       { name: "theme-color", content: "#05070B" },
       { title: "Strapp Walk — Field Operations" },
-      { name: "description", content: "Mobile-first field acquisition platform for Durban operators." },
+      {
+        name: "description",
+        content: "Mobile-first field acquisition platform for Durban operators.",
+      },
     ],
     links: [
       { rel: "preconnect", href: "https://fonts.googleapis.com" },

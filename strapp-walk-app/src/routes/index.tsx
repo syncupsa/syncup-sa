@@ -1,7 +1,15 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { useMemo, useState, useEffect } from "react";
 import { useStrapp } from "@/lib/strapp/store";
-import { PageContainer, PageHeader, Card, CardHeader, Money, StatusDot, Empty } from "@/components/shared/ui";
+import {
+  PageContainer,
+  PageHeader,
+  Card,
+  CardHeader,
+  Money,
+  StatusDot,
+  Empty,
+} from "@/components/shared/ui";
 import { Sparkles } from "lucide-react";
 import { balanceDue, formatZAR, totalQuote } from "@/lib/strapp/types";
 import { Map as MapIcon, Plus, Navigation, ArrowRight } from "lucide-react";
@@ -11,7 +19,10 @@ export const Route = createFileRoute("/")({
   head: () => ({
     meta: [
       { title: "Dashboard · STRAPP Walk" },
-      { name: "description", content: "Operational overview — revenue, routes, follow-ups, today's tasks." },
+      {
+        name: "description",
+        content: "Operational overview — revenue, routes, follow-ups, today's tasks.",
+      },
     ],
   }),
 });
@@ -36,14 +47,17 @@ function Dashboard() {
   });
   useEffect(() => {
     if (typeof window !== "undefined") {
-      localStorage.setItem("strapp.dailyTarget", JSON.stringify({ date: todayStr, target: dailyTarget }));
+      localStorage.setItem(
+        "strapp.dailyTarget",
+        JSON.stringify({ date: todayStr, target: dailyTarget }),
+      );
     }
   }, [dailyTarget, todayStr]);
 
   // Count businesses created today
   const todayCount = useMemo(() => {
     const start = new Date(todayStr);
-    return businesses.filter(b => b.createdAt >= start.getTime()).length;
+    return businesses.filter((b) => b.createdAt >= start.getTime()).length;
   }, [businesses, todayStr]);
 
   // Gamified feedback state
@@ -57,7 +71,9 @@ function Dashboard() {
   }, [todayCount, dailyTarget]);
 
   const stats = useMemo(() => {
-    const monthStart = new Date(); monthStart.setDate(1); monthStart.setHours(0, 0, 0, 0);
+    const monthStart = new Date();
+    monthStart.setDate(1);
+    monthStart.setHours(0, 0, 0, 0);
     const revenueMonth = businesses
       .filter((b) => (b.visitedAt || b.createdAt) >= monthStart.getTime())
       .reduce((a, b) => a + (b.amountPaid || 0), 0);
@@ -82,8 +98,10 @@ function Dashboard() {
       .slice(0, 5);
   }, [businesses]);
 
-  const goalPct = Math.min(100, Math.round((stats.revenueAll / Math.max(1, revenueGoal.goal)) * 100));
-
+  const goalPct = Math.min(
+    100,
+    Math.round((stats.revenueAll / Math.max(1, revenueGoal.goal)) * 100),
+  );
 
   return (
     <PageContainer>
@@ -101,7 +119,9 @@ function Dashboard() {
             <button
               onClick={() => setWalking(!walkingMode)}
               className={`inline-flex items-center gap-2 rounded-md px-3 py-2 text-sm font-medium transition-colors ${
-                walkingMode ? "bg-foreground text-background" : "border border-border bg-panel text-foreground hover:bg-panel-elevated"
+                walkingMode
+                  ? "bg-foreground text-background"
+                  : "border border-border bg-panel text-foreground hover:bg-panel-elevated"
               }`}
             >
               <Navigation className="h-4 w-4" /> {walkingMode ? "Walking on" : "Start walking"}
@@ -131,7 +151,9 @@ function Dashboard() {
         />
         <div className="px-5 py-4">
           <div className="flex items-center gap-3 mb-2">
-            <span className="text-3xl font-extrabold text-emerald-600 drop-shadow">{todayCount}</span>
+            <span className="text-3xl font-extrabold text-emerald-600 drop-shadow">
+              {todayCount}
+            </span>
             <span className="text-lg text-muted-foreground">/ {dailyTarget}</span>
             {todayCount >= dailyTarget && (
               <span className="ml-2 inline-flex items-center gap-1 text-emerald-600 font-bold animate-pulse">
@@ -142,14 +164,18 @@ function Dashboard() {
           <div className="h-3 w-full overflow-hidden rounded-full bg-background border border-emerald-200">
             <div
               className="h-full bg-gradient-to-r from-emerald-400 via-yellow-300 to-pink-400 transition-all duration-700"
-              style={{ width: `${Math.min(100, Math.round((todayCount / Math.max(1, dailyTarget)) * 100))}%` }}
+              style={{
+                width: `${Math.min(100, Math.round((todayCount / Math.max(1, dailyTarget)) * 100))}%`,
+              }}
             />
           </div>
         </div>
         {showCongrats && (
           <div className="absolute left-1/2 -translate-x-1/2 -top-10 z-10 flex flex-col items-center animate-fade-in">
             <div className="text-4xl">💰💎</div>
-            <div className="text-xs font-bold text-emerald-600 bg-white/80 rounded px-2 py-1 mt-1 shadow">Billion Dollar Day! Target hit!</div>
+            <div className="text-xs font-bold text-emerald-600 bg-white/80 rounded px-2 py-1 mt-1 shadow">
+              Billion Dollar Day! Target hit!
+            </div>
           </div>
         )}
       </Card>
@@ -183,7 +209,10 @@ function Dashboard() {
             title="Today's tasks"
             subtitle={`${todayTasks.length} item${todayTasks.length === 1 ? "" : "s"}`}
             action={
-              <Link to={"/clients" as any} className="text-xs text-muted-foreground hover:text-foreground inline-flex items-center gap-1">
+              <Link
+                to={"/clients" as any}
+                className="text-xs text-muted-foreground hover:text-foreground inline-flex items-center gap-1"
+              >
                 All clients <ArrowRight className="h-3 w-3" />
               </Link>
             }
@@ -191,7 +220,10 @@ function Dashboard() {
           <div>
             {todayTasks.length === 0 ? (
               <div className="px-5 py-6">
-                <Empty title="No tasks yet" hint="Mark a client as follow-up or active to see it here." />
+                <Empty
+                  title="No tasks yet"
+                  hint="Mark a client as follow-up or active to see it here."
+                />
               </div>
             ) : (
               <ul className="divide-y divide-border">
@@ -206,7 +238,9 @@ function Dashboard() {
                         <StatusDot status={b.status} />
                         <div className="min-w-0">
                           <div className="truncate text-sm text-foreground">{b.name}</div>
-                          <div className="truncate text-xs text-muted-foreground">{b.area || b.address || "—"}</div>
+                          <div className="truncate text-xs text-muted-foreground">
+                            {b.area || b.address || "—"}
+                          </div>
                         </div>
                       </div>
                       <Money value={balanceDue(b)} className="text-xs text-muted-foreground" />
@@ -255,9 +289,24 @@ function Dashboard() {
 
       {/* Quick action FAB-ish row */}
       <div className="mt-6 grid grid-cols-2 gap-3 md:grid-cols-3">
-        <QuickLink to="/map" icon={<Plus className="h-4 w-4" />} label="Add new target" desc="Drop a pin on the map" />
-        <QuickLink to="/routes" icon={<Navigation className="h-4 w-4" />} label="Plan a route" desc="Suburb walking plans" />
-        <QuickLink to="/finance" icon={<ArrowRight className="h-4 w-4" />} label="Log a payment" desc="Track deposits & settles" />
+        <QuickLink
+          to="/map"
+          icon={<Plus className="h-4 w-4" />}
+          label="Add new target"
+          desc="Drop a pin on the map"
+        />
+        <QuickLink
+          to="/routes"
+          icon={<Navigation className="h-4 w-4" />}
+          label="Plan a route"
+          desc="Suburb walking plans"
+        />
+        <QuickLink
+          to="/finance"
+          icon={<ArrowRight className="h-4 w-4" />}
+          label="Log a payment"
+          desc="Track deposits & settles"
+        />
       </div>
     </PageContainer>
   );
@@ -272,13 +321,25 @@ function Kpi({ label, value }: { label: string; value: string }) {
   );
 }
 
-function QuickLink({ to, icon, label, desc }: { to: string; icon: React.ReactNode; label: string; desc: string }) {
+function QuickLink({
+  to,
+  icon,
+  label,
+  desc,
+}: {
+  to: string;
+  icon: React.ReactNode;
+  label: string;
+  desc: string;
+}) {
   return (
     <Link
       to={to as any}
       className="group flex items-center gap-3 rounded-lg border border-border bg-panel px-4 py-3 hover:bg-panel-elevated transition-colors"
     >
-      <div className="flex h-9 w-9 items-center justify-center rounded-md border border-border bg-background text-foreground">{icon}</div>
+      <div className="flex h-9 w-9 items-center justify-center rounded-md border border-border bg-background text-foreground">
+        {icon}
+      </div>
       <div className="flex-1">
         <div className="text-sm text-foreground">{label}</div>
         <div className="text-xs text-muted-foreground">{desc}</div>

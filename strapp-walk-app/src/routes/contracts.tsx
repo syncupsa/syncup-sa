@@ -17,8 +17,10 @@ function ContractsPage() {
 
   const print = () => {
     if (!b) return;
-    const w = window.open("", "_blank"); if (!w) return;
-    w.document.write(`<!doctype html><html><head><title>Service Agreement — ${escape(b.name)}</title>
+    const w = window.open("", "_blank");
+    if (!w) return;
+    w.document
+      .write(`<!doctype html><html><head><title>Service Agreement — ${escape(b.name)}</title>
       <style>body{font-family:-apple-system,system-ui,sans-serif;padding:48px;max-width:720px;margin:0 auto;color:#111;line-height:1.6}h1{font-size:24px}p{font-size:14px}.sig{margin-top:64px;display:flex;gap:48px}.sig div{flex:1;border-top:1px solid #111;padding-top:8px;font-size:12px;color:#666}</style>
       </head><body>
       <h1>Service Agreement</h1>
@@ -37,11 +39,23 @@ function ContractsPage() {
     <PageContainer>
       <PageHeader title="Contracts" subtitle="Generate a printable service agreement." />
       <Card className="p-5 space-y-3">
-        <select className="strapp-input" value={clientId} onChange={(e) => setClientId(e.target.value)}>
+        <select
+          className="strapp-input"
+          value={clientId}
+          onChange={(e) => setClientId(e.target.value)}
+        >
           <option value="">— Select client —</option>
-          {businesses.map((x) => <option key={x.id} value={x.id}>{x.name}</option>)}
+          {businesses.map((x) => (
+            <option key={x.id} value={x.id}>
+              {x.name}
+            </option>
+          ))}
         </select>
-        <button onClick={print} disabled={!b} className="inline-flex items-center gap-2 rounded-md bg-foreground px-3 py-2 text-sm font-medium text-background disabled:opacity-40">
+        <button
+          onClick={print}
+          disabled={!b}
+          className="inline-flex items-center gap-2 rounded-md bg-foreground px-3 py-2 text-sm font-medium text-background disabled:opacity-40"
+        >
           <Printer className="h-4 w-4" /> Generate & print
         </button>
       </Card>
@@ -49,4 +63,9 @@ function ContractsPage() {
     </PageContainer>
   );
 }
-function escape(s: string) { return s.replace(/[&<>"']/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" } as any)[c]); }
+function escape(s: string) {
+  return s.replace(
+    /[&<>"']/g,
+    (c) => (({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }) as any)[c],
+  );
+}

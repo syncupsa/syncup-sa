@@ -25,13 +25,14 @@ export function BusinessSheet({
     notes: business?.notes || "",
   });
   useEffect(() => {
-    if (business) setForm({
-      name: business.name || "",
-      lat: business.lat,
-      lng: business.lng,
-      phone: business.phone || "",
-      notes: business.notes || "",
-    });
+    if (business)
+      setForm({
+        name: business.name || "",
+        lat: business.lat,
+        lng: business.lng,
+        phone: business.phone || "",
+        notes: business.notes || "",
+      });
   }, [business]);
   if (!business) return null;
 
@@ -45,22 +46,38 @@ export function BusinessSheet({
                 <StatusDot status={business.status} />
                 <span className="text-xs text-muted-foreground capitalize">{business.status}</span>
                 {business.unlisted && (
-                  <span className="rounded border border-border px-1.5 py-0.5 text-[10px] text-muted-foreground">unlisted</span>
+                  <span className="rounded border border-border px-1.5 py-0.5 text-[10px] text-muted-foreground">
+                    unlisted
+                  </span>
                 )}
               </div>
               {!edit ? (
                 <>
-                  <h2 className="mt-1 text-lg font-semibold text-foreground truncate">{business.name}</h2>
+                  <h2 className="mt-1 text-lg font-semibold text-foreground truncate">
+                    {business.name}
+                  </h2>
                   {/* Details field removed */}
-                  <p className="text-xs text-muted-foreground truncate">Lat: {business.lat.toFixed(6)}, Lng: {business.lng.toFixed(6)}</p>
-                  {business.phone && <p className="text-xs text-muted-foreground truncate">Phone: {business.phone}</p>}
-                  {business.notes && <p className="text-xs text-muted-foreground truncate">Notes: {business.notes}</p>}
-                  <button className="mt-2 text-xs underline" onClick={() => setEdit(true)}>Edit</button>
+                  <p className="text-xs text-muted-foreground truncate">
+                    Lat: {business.lat.toFixed(6)}, Lng: {business.lng.toFixed(6)}
+                  </p>
+                  {business.phone && (
+                    <p className="text-xs text-muted-foreground truncate">
+                      Phone: {business.phone}
+                    </p>
+                  )}
+                  {business.notes && (
+                    <p className="text-xs text-muted-foreground truncate">
+                      Notes: {business.notes}
+                    </p>
+                  )}
+                  <button className="mt-2 text-xs underline" onClick={() => setEdit(true)}>
+                    Edit
+                  </button>
                 </>
               ) : (
                 <form
                   className="space-y-2 mt-2"
-                  onSubmit={e => {
+                  onSubmit={(e) => {
                     e.preventDefault();
                     update(business.id, { ...form });
                     setEdit(false);
@@ -71,7 +88,7 @@ export function BusinessSheet({
                     placeholder="Business Name"
                     value={form.name}
                     required
-                    onChange={e => setForm(f => ({ ...f, name: e.target.value }))}
+                    onChange={(e) => setForm((f) => ({ ...f, name: e.target.value }))}
                   />
                   {/* Details field removed */}
                   <div className="flex gap-2">
@@ -80,7 +97,7 @@ export function BusinessSheet({
                       type="number"
                       step="0.000001"
                       value={form.lat}
-                      onChange={e => setForm(f => ({ ...f, lat: Number(e.target.value) }))}
+                      onChange={(e) => setForm((f) => ({ ...f, lat: Number(e.target.value) }))}
                       required
                       style={{ width: "50%" }}
                       placeholder="Latitude"
@@ -90,7 +107,7 @@ export function BusinessSheet({
                       type="number"
                       step="0.000001"
                       value={form.lng}
-                      onChange={e => setForm(f => ({ ...f, lng: Number(e.target.value) }))}
+                      onChange={(e) => setForm((f) => ({ ...f, lng: Number(e.target.value) }))}
                       required
                       style={{ width: "50%" }}
                       placeholder="Longitude"
@@ -100,17 +117,28 @@ export function BusinessSheet({
                     className="strapp-input"
                     placeholder="Phone (optional)"
                     value={form.phone}
-                    onChange={e => setForm(f => ({ ...f, phone: e.target.value }))}
+                    onChange={(e) => setForm((f) => ({ ...f, phone: e.target.value }))}
                   />
                   <textarea
                     className="strapp-input"
                     placeholder="Notes (optional)"
                     value={form.notes}
-                    onChange={e => setForm(f => ({ ...f, notes: e.target.value }))}
+                    onChange={(e) => setForm((f) => ({ ...f, notes: e.target.value }))}
                   />
                   <div className="flex gap-2 mt-2">
-                    <button type="submit" className="bg-primary text-primary-foreground px-3 py-1.5 rounded text-xs font-bold">Save</button>
-                    <button type="button" className="bg-panel px-3 py-1.5 rounded text-xs" onClick={() => setEdit(false)}>Cancel</button>
+                    <button
+                      type="submit"
+                      className="bg-primary text-primary-foreground px-3 py-1.5 rounded text-xs font-bold"
+                    >
+                      Save
+                    </button>
+                    <button
+                      type="button"
+                      className="bg-panel px-3 py-1.5 rounded text-xs"
+                      onClick={() => setEdit(false)}
+                    >
+                      Cancel
+                    </button>
                   </div>
                 </form>
               )}
@@ -193,10 +221,22 @@ function ActionBtn({
     (href
       ? "bg-panel text-foreground hover:bg-panel-elevated"
       : "bg-panel/50 text-muted-foreground/50 pointer-events-none");
-  if (!href) return <div className={cls}>{icon}{label}</div>;
+  if (!href)
+    return (
+      <div className={cls}>
+        {icon}
+        {label}
+      </div>
+    );
   return (
-    <a href={href} target={external ? "_blank" : undefined} rel={external ? "noreferrer" : undefined} className={cls}>
-      {icon}{label}
+    <a
+      href={href}
+      target={external ? "_blank" : undefined}
+      rel={external ? "noreferrer" : undefined}
+      className={cls}
+    >
+      {icon}
+      {label}
     </a>
   );
 }

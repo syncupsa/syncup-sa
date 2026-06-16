@@ -1,14 +1,24 @@
 import { formatZAR } from "@/lib/strapp/types";
 
-export function Card({ children, className = "" }: { children: React.ReactNode; className?: string }) {
-  return (
-    <div className={`rounded-lg border border-border bg-panel ${className}`}>
-      {children}
-    </div>
-  );
+export function Card({
+  children,
+  className = "",
+}: {
+  children: React.ReactNode;
+  className?: string;
+}) {
+  return <div className={`rounded-lg border border-border bg-panel ${className}`}>{children}</div>;
 }
 
-export function CardHeader({ title, subtitle, action }: { title: string; subtitle?: string; action?: React.ReactNode }) {
+export function CardHeader({
+  title,
+  subtitle,
+  action,
+}: {
+  title: string;
+  subtitle?: string;
+  action?: React.ReactNode;
+}) {
   return (
     <div className="flex items-start justify-between border-b border-border px-5 py-4">
       <div>
@@ -20,7 +30,13 @@ export function CardHeader({ title, subtitle, action }: { title: string; subtitl
   );
 }
 
-export function PageContainer({ children, className = "" }: { children: React.ReactNode; className?: string }) {
+export function PageContainer({
+  children,
+  className = "",
+}: {
+  children: React.ReactNode;
+  className?: string;
+}) {
   return (
     <div className={`mx-auto w-full max-w-6xl px-4 py-6 md:px-8 md:py-8 ${className}`}>
       {children}
@@ -28,7 +44,15 @@ export function PageContainer({ children, className = "" }: { children: React.Re
   );
 }
 
-export function PageHeader({ title, subtitle, action }: { title: string; subtitle?: string; action?: React.ReactNode }) {
+export function PageHeader({
+  title,
+  subtitle,
+  action,
+}: {
+  title: string;
+  subtitle?: string;
+  action?: React.ReactNode;
+}) {
   return (
     <div className="mb-6 flex flex-wrap items-start justify-between gap-3">
       <div>

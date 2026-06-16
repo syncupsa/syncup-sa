@@ -1,14 +1,14 @@
 module.exports = {
-  preset: 'ts-jest',
-  testEnvironment: 'jsdom',
+  preset: "ts-jest",
+  testEnvironment: "jsdom",
   transform: {
-    '^.+\\.(ts|tsx)$': 'ts-jest',
+    "^.+\\.(ts|tsx)$": "ts-jest",
   },
-  moduleFileExtensions: ['ts', 'tsx', 'js', 'jsx', 'json', 'node'],
-  setupFilesAfterEnv: ['@testing-library/jest-dom/extend-expect'],
+  moduleFileExtensions: ["ts", "tsx", "js", "jsx", "json", "node"],
+  setupFilesAfterEnv: ["@testing-library/jest-dom/extend-expect"],
   globals: {
-    'ts-jest': {
-      tsconfig: 'tsconfig.json',
+    "ts-jest": {
+      tsconfig: "tsconfig.json",
     },
   },
 };

@@ -10,10 +10,10 @@ This document outlines the core components and functionalities of the Durban Cor
 
 The system leverages several modern web development technologies:
 
-*   **TanStack Router**: A robust and type-safe routing library for React/Solid applications, enabling file-based routing, automatic code splitting, and advanced data loading patterns.
-*   **Vite/Webpack Plugin (`@tanstack/router-plugin`)**: Integrates TanStack Router with bundlers for route generation and optimized code splitting.
-*   **Source Map Support (`@cspotcode/source-map-support`)**: Enhances debugging by mapping compiled code back to original source files, crucial for development and error reporting.
-*   **Playwright (`@playwright/test`)**: A powerful end-to-end testing framework for reliable browser automation.
+- **TanStack Router**: A robust and type-safe routing library for React/Solid applications, enabling file-based routing, automatic code splitting, and advanced data loading patterns.
+- **Vite/Webpack Plugin (`@tanstack/router-plugin`)**: Integrates TanStack Router with bundlers for route generation and optimized code splitting.
+- **Source Map Support (`@cspotcode/source-map-support`)**: Enhances debugging by mapping compiled code back to original source files, crucial for development and error reporting.
+- **Playwright (`@playwright/test`)**: A powerful end-to-end testing framework for reliable browser automation.
 
 ## 2. Frontend Routing with TanStack Router
 
@@ -24,11 +24,13 @@ The application's navigation and view management are powered by TanStack Router,
 The central piece of the routing system is the router instance, created using `createRouter`. It defines the application's route tree and global configurations.
 
 **Key Concepts:**
-*   **`routeTree`**: The hierarchical structure of all defined routes, often generated automatically via file-based routing.
-*   **`context`**: Allows injecting application-wide state (e.g., authentication status, API clients) into the router, making it accessible to all routes.
-*   **Type Safety**: Achieved by declaring the router's type within the `@tanstack/react-router` module, enabling comprehensive type checking across all routing APIs.
+
+- **`routeTree`**: The hierarchical structure of all defined routes, often generated automatically via file-based routing.
+- **`context`**: Allows injecting application-wide state (e.g., authentication status, API clients) into the router, making it accessible to all routes.
+- **Type Safety**: Achieved by declaring the router's type within the `@tanstack/react-router` module, enabling comprehensive type checking across all routing APIs.
 
 **Example (`src/router.tsx`, `src/App.tsx`):**
+
 ```typescript
 // src/routes/__root.tsx
 import { createRootRouteWithContext, Outlet } from '@tanstack/react-router'
@@ -82,9 +84,9 @@ function App() {
 
 Routes are typically defined using a file-based convention, where file and folder names correspond to URL segments. This simplifies route management and improves maintainability.
 
-*   `src/routes/` is the default directory for route files.
-*   `createFileRoute` defines individual routes.
-*   Layout routes (e.g., `_authenticated.tsx`) protect groups of child routes.
+- `src/routes/` is the default directory for route files.
+- `createFileRoute` defines individual routes.
+- Layout routes (e.g., `_authenticated.tsx`) protect groups of child routes.
 
 ## 3. Authentication and Authorization (Auth and Guards)
 
@@ -95,22 +97,23 @@ Route protection is a critical aspect, preventing unauthorized access to parts o
 The `beforeLoad` option in a route definition is the primary mechanism for implementing route guards. It executes before any component renders or data loads for that route.
 
 **Example (Protected Layout Route):**
+
 ```typescript
 // src/routes/_authenticated.tsx
-import { createFileRoute, redirect } from '@tanstack/react-router'
+import { createFileRoute, redirect } from "@tanstack/react-router";
 
-export const Route = createFileRoute('/_authenticated')({
+export const Route = createFileRoute("/_authenticated")({
   beforeLoad: ({ context, location }) => {
     if (!context.auth.isAuthenticated) {
       throw redirect({
-        to: '/login',
+        to: "/login",
         search: {
           redirect: location.href,
         },
-      })
+      });
     }
   },
-})
+});
 ```
 
 ### 3.2 Redirecting Users
@@ -136,21 +139,22 @@ TanStack Router optimizes application performance through automatic and configur
 Enabled via the `@tanstack/router-plugin` bundler plugin, this feature automatically splits route components and non-critical assets into separate, lazily loaded JavaScript chunks. This significantly reduces the initial bundle size and improves load times.
 
 **Configuration (Vite example):**
+
 ```typescript
 // vite.config.ts
-import { defineConfig } from 'vite'
-import react from '@vitejs/plugin-react'
-import { tanstackRouter } from '@tanstack/router-plugin/vite'
+import { defineConfig } from "vite";
+import react from "@vitejs/plugin-react";
+import { tanstackRouter } from "@tanstack/router-plugin/vite";
 
 export default defineConfig({
   plugins: [
     tanstackRouter({
-      target: 'react',
+      target: "react",
       autoCodeSplitting: true, // Enables automatic code splitting
     }),
     react(),
   ],
-})
+});
 ```
 
 ### 4.2 How It Works
@@ -172,6 +176,7 @@ TanStack Router provides a sophisticated data loading mechanism with built-in ca
 ### 5.1 Route Loading Lifecycle
 
 A defined sequence of events occurs upon URL/history updates:
+
 1.  **Route Matching**: `params.parse`, `validateSearch`.
 2.  **Route Pre-Loading (Serial)**: `beforeLoad`, `onError`.
 3.  **Route Loading (Parallel)**: `component.preload?`, `loader`, rendering `pendingComponent` (optional), `component`, `onError`.
@@ -180,16 +185,16 @@ A defined sequence of events occurs upon URL/history updates:
 
 Route loaders fetch data for a route. They receive an object with `abortController`, `cause`, `context`, `deps`, `location`, `params`, `preload` flags, and the `route` object itself.
 
-*   **Consuming Data**: Data from a `loader` is accessed via `Route.useLoaderData()` or `getRouteApi().useLoaderData()` within components.
+- **Consuming Data**: Data from a `loader` is accessed via `Route.useLoaderData()` or `getRouteApi().useLoaderData()` within components.
 
 ### 5.3 Dependency-based Stale-While-Revalidate Caching
 
 The router includes an SWR (Stale-While-Revalidate) cache for `loader` data, keyed by the route's pathname and any explicit `loaderDeps`.
 
-*   **`loaderDeps`**: Specifies dependencies (e.g., search params) that, when changed, force a reload. Only include actual dependencies to avoid unnecessary reloads.
-*   **`staleTime`**: Configures how long data is considered "fresh" before triggering a background revalidation. Default is 0ms (always stale) for navigations, and 30 seconds for preloads.
-*   **`gcTime`**: Determines how long unused data remains in the cache before garbage collection (default: 30 minutes).
-*   **`staleReloadMode`**: Controls whether stale data reloads block rendering (`'blocking'`) or happen in the background (`'background'`, default).
+- **`loaderDeps`**: Specifies dependencies (e.g., search params) that, when changed, force a reload. Only include actual dependencies to avoid unnecessary reloads.
+- **`staleTime`**: Configures how long data is considered "fresh" before triggering a background revalidation. Default is 0ms (always stale) for navigations, and 30 seconds for preloads.
+- **`gcTime`**: Determines how long unused data remains in the cache before garbage collection (default: 30 minutes).
+- **`staleReloadMode`**: Controls whether stale data reloads block rendering (`'blocking'`) or happen in the background (`'background'`, default).
 
 ### 5.4 Handling Errors
 
@@ -205,21 +210,22 @@ Navigation in TanStack Router is type-safe and flexible, offering various ways t
 
 ### 6.1 Core Navigation APIs
 
-*   **`<Link>` Component**: The primary way for user-initiated navigation, rendering a standard `<a>` tag with proper `href` attributes, supporting preloading on hover, and active/inactive styling.
-*   **`useNavigate()` Hook**: For imperative navigation, typically triggered by side effects (e.g., after form submission).
-*   **`router.navigate()` Method**: Similar to `useNavigate`, but accessible from anywhere the `router` instance is available (e.g., outside React components).
-*   **`<Navigate>` Component**: Renders nothing but performs an immediate client-side navigation upon mounting.
+- **`<Link>` Component**: The primary way for user-initiated navigation, rendering a standard `<a>` tag with proper `href` attributes, supporting preloading on hover, and active/inactive styling.
+- **`useNavigate()` Hook**: For imperative navigation, typically triggered by side effects (e.g., after form submission).
+- **`router.navigate()` Method**: Similar to `useNavigate`, but accessible from anywhere the `router` instance is available (e.g., outside React components).
+- **`<Navigate>` Component**: Renders nothing but performs an immediate client-side navigation upon mounting.
 
 ### 6.2 Link Options (`ToOptions`, `NavigateOptions`, `LinkOptions`)
 
 These interfaces define common properties for navigation:
-*   `to`: Destination route path (absolute or relative).
-*   `from`: Origin route path for relative navigation.
-*   `params`: Path parameters.
-*   `search`: Search/query parameters.
-*   `hash`: URL hash fragment.
-*   `replace`: Whether to replace the current history entry.
-*   `preload`: Strategy for preloading (e.g., `'intent'` for hover).
+
+- `to`: Destination route path (absolute or relative).
+- `from`: Origin route path for relative navigation.
+- `params`: Path parameters.
+- `search`: Search/query parameters.
+- `hash`: URL hash fragment.
+- `replace`: Whether to replace the current history entry.
+- `preload`: Strategy for preloading (e.g., `'intent'` for hover).
 
 ### 6.3 Dynamic and Optional Parameters
 
@@ -231,16 +237,17 @@ URL rewrites provide a powerful mechanism to transform URLs bidirectionally betw
 
 ### 7.1 How It Works
 
-*   **`input` rewrite**: Transforms the URL *from the browser* before the router processes it.
-*   **`output` rewrite**: Transforms the URL *from the router* before it's written to the browser.
+- **`input` rewrite**: Transforms the URL _from the browser_ before the router processes it.
+- **`output` rewrite**: Transforms the URL _from the router_ before it's written to the browser.
 
 This enables scenarios like stripping locale prefixes for internal routing (`/en/about` -> `/about`) and re-adding them for external display.
 
 ### 7.2 Common Patterns
-*   **i18n Locale Prefixes**: Managing multilingual URLs.
-*   **Subdomain Routing**: Mapping `admin.example.com` to internal `/admin` routes.
-*   **Legacy URL Migration**: Handling old URL patterns that redirect to new routes.
-*   **Composing Rewrites**: Multiple rewrite rules can be chained using `composeRewrites`.
+
+- **i18n Locale Prefixes**: Managing multilingual URLs.
+- **Subdomain Routing**: Mapping `admin.example.com` to internal `/admin` routes.
+- **Legacy URL Migration**: Handling old URL patterns that redirect to new routes.
+- **Composing Rewrites**: Multiple rewrite rules can be chained using `composeRewrites`.
 
 The `location` object provides `href` (internal URL) and `publicHref` (external URL) to distinguish between the two.
 
@@ -258,8 +265,8 @@ The `validateSearch` option on a route allows developers to define a schema (e.g
 
 ### 8.3 Reading and Writing Search Params
 
-*   **Reading**: `Route.useSearch()` in components, or `search` property in `loaderDeps` for loaders.
-*   **Writing**: `search` prop on `<Link>` components or `search` option in `navigate()` calls.
+- **Reading**: `Route.useSearch()` in components, or `search` property in `loaderDeps` for loaders.
+- **Writing**: `search` prop on `<Link>` components or `search` option in `navigate()` calls.
 
 ### 8.4 Search Middlewares
 
@@ -273,9 +280,9 @@ TanStack Router supports both non-streaming and streaming SSR for improved initi
 
 The entire page HTML and data are rendered on the server and sent as a single response. The client then hydrates the static markup into an interactive application.
 
-*   Uses `createRequestHandler` and `defaultRenderHandler` (or `renderRouterToString` with `RouterServer`) on the server.
-*   `RouterClient` component is used for client-side hydration.
-*   Automatic server-side history (`createMemoryHistory`) and loader data dehydration/hydration are handled.
+- Uses `createRequestHandler` and `defaultRenderHandler` (or `renderRouterToString` with `RouterServer`) on the server.
+- `RouterClient` component is used for client-side hydration.
+- Automatic server-side history (`createMemoryHistory`) and loader data dehydration/hydration are handled.
 
 ### 9.2 Streaming SSR
 

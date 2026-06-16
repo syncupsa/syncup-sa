@@ -1,7 +1,10 @@
-'use client';
-import React, { useState, useTransition } from 'react';
+"use client";
+import React, { useState, useTransition } from "react";
 
-interface Props { locales: string[]; current: string; }
+interface Props {
+  locales: string[];
+  current: string;
+}
 
 export default function LocaleSwitcher({ locales, current }: Props) {
   const [isPending, startTransition] = useTransition();
@@ -12,15 +15,20 @@ export default function LocaleSwitcher({ locales, current }: Props) {
       setActive(l);
       // Use native URL update for edge-friendly routing.
       const url = new URL(window.location.href);
-      url.searchParams.set('lang', l);
-      window.history.replaceState({}, '', url.toString());
+      url.searchParams.set("lang", l);
+      window.history.replaceState({}, "", url.toString());
     });
   }
 
   return (
-    <div style={{ display: 'flex', gap: 8 }}>
-      {locales.map(l => (
-        <button key={l} disabled={isPending} onClick={() => changeLocale(l)} aria-pressed={active === l}>
+    <div style={{ display: "flex", gap: 8 }}>
+      {locales.map((l) => (
+        <button
+          key={l}
+          disabled={isPending}
+          onClick={() => changeLocale(l)}
+          aria-pressed={active === l}
+        >
           {l}
         </button>
       ))}

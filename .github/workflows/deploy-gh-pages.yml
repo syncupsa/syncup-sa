@@ -32,4 +32,4 @@ jobs:
           github_token: ${{ secrets.GITHUB_TOKEN }}
           publish_dir: ./strapp-walk-app/dist
           publish_branch: gh-pages
-          cname: ''
+          cname: ""

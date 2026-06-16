@@ -1,8 +1,6 @@
-
-import { createRouter, RouterProvider } from '@tanstack/react-router';
-import { routeTree } from './routeTree.gen';
-import { QueryClient } from '@tanstack/react-query';
-
+import { createRouter, RouterProvider } from "@tanstack/react-router";
+import { routeTree } from "./routeTree.gen";
+import { QueryClient } from "@tanstack/react-query";
 
 let router: ReturnType<typeof createRouter> | undefined = undefined;
 
@@ -10,7 +8,7 @@ export function getRouter() {
   if (!router) {
     router = createRouter({
       routeTree,
-      defaultPreload: 'intent',
+      defaultPreload: "intent",
       context: { queryClient: new QueryClient() },
     });
   }

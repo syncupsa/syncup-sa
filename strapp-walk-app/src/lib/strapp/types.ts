@@ -64,13 +64,15 @@ export interface Business {
 
 export type RouteStatus = "active" | "paused" | "concluded";
 
-export interface RoutePhases { // This is still relevant for Route
-  intake: boolean;     // Survey
-  outreach: boolean;   // Outreach
+export interface RoutePhases {
+  // This is still relevant for Route
+  intake: boolean; // Survey
+  outreach: boolean; // Outreach
   deployment: boolean; // Deployment
 }
 
-export interface Campaign { // The "folder"
+export interface Campaign {
+  // The "folder"
   id: string;
   name: string;
   rationale: string;
@@ -82,7 +84,8 @@ export interface Campaign { // The "folder"
   researchFile?: File | null;
 }
 
-export interface Route { // The "time-bound instance"
+export interface Route {
+  // The "time-bound instance"
   id: string;
   campaignId: string; // Foreign key to Campaign
   name: string;
@@ -115,11 +118,13 @@ export interface PaymentLog {
   at: number;
 }
 
-export function emptyPhases(): RoutePhases { // Still used by Route
+export function emptyPhases(): RoutePhases {
+  // Still used by Route
   return { intake: false, outreach: false, deployment: false };
 }
 
-export function routeRevenue(r: Route, businesses: Business[]): number { // Update type to Route
+export function routeRevenue(r: Route, businesses: Business[]): number {
+  // Update type to Route
   return businesses
     .filter((b) => b.campaignId === r.id)
     .reduce((a, b) => a + (b.amountPaid || 0), 0);
@@ -127,13 +132,13 @@ export function routeRevenue(r: Route, businesses: Business[]): number { // Upda
 
 export const campaignRevenue = routeRevenue;
 
-export function routeOpportunity(r: Route, businesses: Business[]): number { // Update type to Route
-  return businesses
-    .filter((b) => b.campaignId === r.id)
-    .reduce((a, b) => a + totalQuote(b), 0);
+export function routeOpportunity(r: Route, businesses: Business[]): number {
+  // Update type to Route
+  return businesses.filter((b) => b.campaignId === r.id).reduce((a, b) => a + totalQuote(b), 0);
 }
 
-export function routeProgress(r: Route, businesses: Business[]): number { // Update type to Route
+export function routeProgress(r: Route, businesses: Business[]): number {
+  // Update type to Route
   const list = businesses.filter((b) => b.campaignId === r.id);
   if (list.length === 0) return 0;
   const done = list.filter((b) => b.status === "completed").length;
@@ -187,9 +192,7 @@ export function haversineKm(
   const dLng = ((b.lng - a.lng) * Math.PI) / 180;
   const la1 = (a.lat * Math.PI) / 180;
   const la2 = (b.lat * Math.PI) / 180;
-  const h =
-    Math.sin(dLat / 2) ** 2 +
-    Math.cos(la1) * Math.cos(la2) * Math.sin(dLng / 2) ** 2;
+  const h = Math.sin(dLat / 2) ** 2 + Math.cos(la1) * Math.cos(la2) * Math.sin(dLng / 2) ** 2;
   return 2 * R * Math.asin(Math.sqrt(h));
 }
 

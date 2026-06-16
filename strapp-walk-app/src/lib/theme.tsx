@@ -43,7 +43,9 @@ export function ThemeProvider({ children }: { children: ReactNode }) {
   const setTheme = (t: ThemeName) => {
     setThemeState(t);
     apply(t);
-    try { localStorage.setItem(STORAGE_KEY, t); } catch {}
+    try {
+      localStorage.setItem(STORAGE_KEY, t);
+    } catch {}
   };
 
   return <ThemeContext.Provider value={{ theme, setTheme }}>{children}</ThemeContext.Provider>;

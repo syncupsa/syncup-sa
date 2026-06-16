@@ -34,7 +34,9 @@ export function BottomTabBar() {
                   }`}
                   strokeWidth={active ? 2.2 : 1.6}
                 />
-                <span className={active ? "text-foreground" : "text-muted-foreground"}>{label}</span>
+                <span className={active ? "text-foreground" : "text-muted-foreground"}>
+                  {label}
+                </span>
               </Link>
             </li>
           );

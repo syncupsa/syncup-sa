@@ -1,11 +1,11 @@
-import React from 'react';
-import type { Metadata } from 'next';
-import { buildUnifiedGraph, createSampleUnifiedGraph } from '../lib/jsonld';
+import React from "react";
+import type { Metadata } from "next";
+import { buildUnifiedGraph, createSampleUnifiedGraph } from "../lib/jsonld";
 
 export const metadata: Metadata = {
-  title: 'Sync Up — Local Visibility',
-  description: 'Local visibility and websites for South African businesses',
-  alternates: { canonical: 'https://syncup.example.com' }
+  title: "Sync Up — Local Visibility",
+  description: "Local visibility and websites for South African businesses",
+  alternates: { canonical: "https://syncup.example.com" },
 };
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
@@ -21,9 +21,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         <meta name="viewport" content="width=device-width,initial-scale=1" />
         <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: jsonLd }} />
       </head>
-      <body>
-        {children}
-      </body>
+      <body>{children}</body>
     </html>
   );
 }
